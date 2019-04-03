@@ -1,3 +1,18 @@
+# Project 
+*.out
+.DS_Store
+*.npy
+*.jpg
+*.png
+*.txt
+*.swp
+*.swo
+*.zip
+*.ipynb
+data/
+output/
+weights/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
