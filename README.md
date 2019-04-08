@@ -28,7 +28,7 @@ mkdir data
 cd data/
 ````
 2. Download [Cambridge Landmarks Dataset](http://mi.eng.cam.ac.uk/projects/relocalisation/#dataset) under _data/_  
-3. Visualize the data using _notebooks/data_loading.ipynb_.
+3. Visualize the data using [notebooks/data_loading.ipynb](notebooks/data_loading.ipynb) .
 4. (Optional) One can also resize the dataset images so that shorter side has 256 pixels at once makes training faster.
 #### Other Datasets
 If you want to train it on other datasets, please make sure it has same folder structure as Cambridge Landmarks dataset: 
@@ -42,8 +42,8 @@ Here, **dataset_train.txt** and **dataset_test.txt** are the pose label files. F
 
 
 ### Training
-We recommend to download **pretrained** model for PoseNet initialization. The weights are pretrained on [Place](https://github.com/CSAILVision/places365) dataset for place recognition and has been adapted for our PoseNet implementation. It can be downloaded by executing _weights/download.sh_.
-Use **_abspose.py_** for either training or testing. For detailed training options run `python -m abspose -h` from the repository root directory.
+We recommend to download **pretrained** model for PoseNet initialization. The weights are pretrained on [Place](https://github.com/CSAILVision/places365) dataset for place recognition and has been adapted for our PoseNet implementation. It can be downloaded by executing [weights/download.sh](weights/download.sh).
+Use [abspose.py](abspose.py) for either training or testing. For detailed training options run `python -m abspose -h` from the repository root directory.
 #### Training Examples
 Here we show an example to train a PoseNet-Nobeta model on ShopFacade scene.
 ````
@@ -56,8 +56,9 @@ python -m abspose -b 75 --train -val 10 --epoch 1000 \
        --learn_weighting  --homo_init 0.0 -3.0 \  
        --odir %output_dir%\
 ````
+See more training examples in [example.sh](example.sh).
 #### Training Visualization (optional)
-We use [Visdom](https://github.com/facebookresearch/visdom) server to visualize the training process.  By default, training loss, validation accuracy( translation and rotation) are plotted to one figure. One can adapt it inside **_utils/common/visdom_templates.py_** to plot other statistics. It can turned on from training options as following.
+We use [Visdom](https://github.com/facebookresearch/visdom) server to visualize the training process.  By default, training loss, validation accuracy( translation and rotation) are plotted to one figure. One can adapt it inside [utils/common/visdom_templates.py](utils/common/visdom_templates.py) to plot other statistics. It can turned on from training options as following.
 ````
 # Visdom option 
   --visenv %s, -venv %s the visdom environment name
@@ -73,7 +74,7 @@ We use [Visdom](https://github.com/facebookresearch/visdom) server to visualize 
 #### Trained models
 We provide some pretrained models [here](https://vision.in.tum.de/webshare/u/zhouq/visloc-apr/models/). One can also see how the output of the program there. **However**, we did not spend much effort in tuning trainnig parameters to improve the localization accuracy, since it is not essential for us.
 
-1. Test a model using  **_abspose.py_** :
+1. Test a model using [abspose.py](abspose.py) :
 ````
 python -m abspose -b 75 --test \
        --data_root 'data/CambridgeLandmarks' \
@@ -83,7 +84,7 @@ python -m abspose -b 75 --test \
        --resume %checkpoint_path% 
        --odir %result_output_dir%
 ````
-2. Test using **_notebooks/evaluate_posenet.ipynb_**:
+2. Test using [notebooks/evaluate_posenet.ipynb]([notebooks/evaluate_posenet.ipynb):
 We also provide notebook for evaluation which could be usful for further experiments with pretrained models.
 
 ### Citations
