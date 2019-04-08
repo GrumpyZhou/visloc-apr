@@ -1,0 +1,16 @@
+name: visloc_apr
+channels:
+  - owlas
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - cudatoolkit=8.0
+  - python=3.7
+  - pytorch
+  - torchvision
+  - visdom
+  - jupyter
+  - matplotlib
+  - transforms3d
+
