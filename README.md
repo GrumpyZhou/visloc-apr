@@ -1,28 +1,63 @@
 ## Absolute Camera Pose Regression for Visual Localization
 This repository provides implementation of PoseNet\[Kendall2015ICCV\], PoseNet-Nobeta\[Kendall2017CVPR\] which trains PoseNet using the loss learning the weighting parameter and PoseLSTM\[Walch2017ICCV\].
-
-### Data Preparation
-1. Datasets are supposed to be placed under _data/_, e.g., _data/CambridgeLandmarks_ or _data/7Scenes_.
-If you want to train it on other datasets, please make sure it has same format CambridgeLandmarks, meaning pose labels are writting in **dataset_train.txt** and **dataset_test.txt**. For more details about the pose label format, you can check CambridgeLandmarks dataset documentation.
-
-2. Download pretrained model for PoseNet initialization
-The weights are pretrained on Place dataset for place recognition and has been adapted for our PoseNet implementation. It can be downloaded by executing _weights/download.sh_.
-### Training Examples
-Here we show an example to train a PoseNet-Nobeta model on ShopFacade scene.
-For more detailed training options run `python -m abspose -h` from the repository root directory.
+To use our code, first download the repository:
 ````
-# Example to train a PoseNet on ShopFacade
+git clone git@github.com:GrumpyZhou/visloc-apr.git
+````
+
+### Setup Running Environment
+We tested the code on Linux Ubuntu 16.04.6 with 
+````
+Python 3.7
+Pytorch 1.0
+CUDA 8.0
+````
+We recommend to use *Anaconda* to manage packages. Run following lines to automatically setup a ready environment for our code.
+````
+conda env create -f environment.yml
+conda activte visloc_apr
+````
+Otherwise, one can try to download all required packages seperately according to their offical documentation.
+*Comments:*_The code has also been tested with Python 3.5, Pytorch 0.4, but now we have upgraded to latest versions._
+### Prepare Datasets 
+Our code is flexible for evaluation on various localization datasets. We use Cambridge Landmarks dataset as an example to show how to prepare a dataset:
+1. Create data/ folder (optional)
+````
+cd visloc-apr/
+mkdir data
+cd data/
+````
+2. Download [Cambridge Landmarks Dataset](http://mi.eng.cam.ac.uk/projects/relocalisation/#dataset) under _data/_  
+3. Visualize the data using _notebooks/data_loading.ipynb_.
+4. (Optional) One can also resize the dataset images so that shorter side has 256 pixels at once makes training faster.
+#### Other Datasets
+If you want to train it on other datasets, please make sure it has same folder structure as Cambridge Landmarks dataset: 
+````
+data/target_dataset/
+-- dataset_scene/
+---- dataset_train.txt
+---- dataset_test.txt
+````
+Here, **dataset_train.txt** and **dataset_test.txt** are the pose label files. For more details about the pose label format, you can check the documentation of Cambridge Landmarks dataset.
+
+
+### Training
+We recommend to download **pretrained** model for PoseNet initialization. The weights are pretrained on [Place](https://github.com/CSAILVision/places365) dataset for place recognition and has been adapted for our PoseNet implementation. It can be downloaded by executing _weights/download.sh_.
+Use **_abspose.py_** for either training or testing. For detailed training options run `python -m abspose -h` from the repository root directory.
+#### Training Examples
+Here we show an example to train a PoseNet-Nobeta model on ShopFacade scene.
+````
 python -m abspose -b 75 --train -val 10 --epoch 1000 \
-       --data_root 'data/%your_dataset_folder%' \
+       --data_root 'data/CambridgeLandmarks' \
        --train_txt 'dataset_train.txt' --val_txt 'dataset_test.txt' \
        --dataset 'ShopFacade' -rs 256 --crop 224 \
        --network 'PoseNet'  --pretrained 'weights/googlenet_places.extract.pth'\
        --optim 'Adam' -eps 1.0 -lr 0.005 -wd 0.0001 \
-       --learn_weighting  --homo_init 0.0 -3.0 \
-       --odir 'output/posenet/nobeta/CambridgeLandmarks/ShopFacade/lr5e-3_wd1e-4_sx0.0_sq-3.0'\
+       --learn_weighting  --homo_init 0.0 -3.0 \  
+       --odir %output_dir%\
 ````
-
-We use [Visdom](https://github.com/facebookresearch/visdom) server to visualize the training process.  By default, training loss, validation accuracy( translation and rotation) are plotted to one figure. One can adapt it inside the code to plot other statistics. It can turned on from training options as following.
+#### Training Visualization (optional)
+We use [Visdom](https://github.com/facebookresearch/visdom) server to visualize the training process.  By default, training loss, validation accuracy( translation and rotation) are plotted to one figure. One can adapt it inside **_utils/common/visdom_templates.py_** to plot other statistics. It can turned on from training options as following.
 ````
 # Visdom option 
   --visenv %s, -venv %s the visdom environment name
@@ -33,6 +68,23 @@ We use [Visdom](https://github.com/facebookresearch/visdom) server to visualize 
 # Append these options to the previous training command
   -vp 9333 -vh 'localhost' -venv 'PoseNet-Cambridge' -vwin 'nobeta.shop.lr5e-3_wd1e-4_sx0.0_sq-3.0'
 ````
+
+### Testing
+#### Trained models
+We provide some pretrained models [here](https://vision.in.tum.de/webshare/u/zhouq/visloc-apr/models/). One can also see how the output of the program there. **However**, we did not spend much effort in tuning trainnig parameters to improve the localization accuracy, since it is not essential for us.
+
+1. Test a model using  **_abspose.py_** :
+````
+python -m abspose -b 75 --test \
+       --data_root 'data/CambridgeLandmarks' \
+       --pose_txt 'dataset_test.txt' \
+       --dataset 'ShopFacade' -rs 256 --crop 224 \
+       --network 'PoseNet'\
+       --resume %checkpoint_path% 
+       --odir %result_output_dir%
+````
+2. Test using **_notebooks/evaluate_posenet.ipynb_**:
+We also provide notebook for evaluation which could be usful for further experiments with pretrained models.
 
 ### Citations
 ````
