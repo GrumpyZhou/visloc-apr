@@ -131,7 +131,7 @@ def test(net, config, log, data_loader, err_thres=(2, 5)):
             xyz_ = batch['xyz'].data.numpy()
             wpqr_ = batch['wpqr'].data.numpy()
             t_err = np.linalg.norm(xyz - xyz_, axis=1)
-            q_err = np.squeeze(cal_quat_angle_error(wpqr, wpqr_))
+            q_err = cal_quat_angle_error(wpqr, wpqr_)
             pos_err += list(t_err)
             ori_err += list(q_err)
     err = (np.median(pos_err), np.median(ori_err))
@@ -150,12 +150,12 @@ def main():
     lprint(config_to_string(config), log)
 
     # Datasets configuration
-    data_src = AbsPoseDataset(config.dataset, config.data_root, config.train_txt, config.ops)
+    data_src = AbsPoseDataset(config.dataset, config.data_root, config.pose_txt, config.ops)
     data_loader = data.DataLoader(data_src, batch_size=config.batch_size, shuffle=config.training, num_workers=config.num_workers)
     lprint('Dataset total samples: {}'.format(len(data_src)))
 
     if config.validate:
-        val_data_src = AbsPoseDataset(config.dataset, config.data_root, config.val_txt, config.val_ops)
+        val_data_src = AbsPoseDataset(config.dataset, config.data_root, config.val_pose_txt, config.val_ops)
         val_loader = data.DataLoader(val_data_src, batch_size=config.batch_size, shuffle=False, num_workers=config.num_workers)
     else:
         val_loader = None

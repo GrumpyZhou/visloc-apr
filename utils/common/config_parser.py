@@ -35,10 +35,10 @@ class AbsPoseConfig:
                                          help='the root directory containing target datasets(default: %(default)s)' )
         data_group.add_argument('--dataset', '-ds', metavar='%s', type=str, required=True, 
                                          help='the target dataset under data root' )        
-        data_group.add_argument('--train_txt',  metavar='%s', default='dataset_train.txt', 
-                                         help='the file to load training images and labels(default: %(default)s)')
-        data_group.add_argument('--val_txt', metavar='%s', type=str, default='dataset_test.txt', 
-                                         help='the file to load testing images and labels(default: %(default)s)')     
+        data_group.add_argument('--pose_txt',  metavar='%s', default='dataset_train.txt', 
+                                         help='the file to load pose labels(default: %(default)s)')
+        data_group.add_argument('--val_pose_txt', metavar='%s', type=str, default='dataset_test.txt', 
+                                         help='the file to load validation image pose labels(default: %(default)s)')     
         
         data_group.add_argument('--batch_size', '-b', metavar='%d', type=int, default=75, 
                                     help='batch size to load the image data(default: %(default)s)')
