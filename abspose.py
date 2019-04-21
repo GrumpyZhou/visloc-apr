@@ -9,7 +9,7 @@ from utils.common.config_parser import AbsPoseConfig
 from utils.common.setup import * 
 from utils.datasets.preprocess import *
 from utils.datasets.abspose import AbsPoseDataset
-from utils.common.visdom_templates import PoseNetVisTmp
+from utils.common.visdom_templates import PoseNetVisTmp, OptimSearchVisTmp
 import networks
 
 def setup_config(config):
@@ -46,10 +46,11 @@ def setup_config(config):
         crop = 'random' if config.training else 'center'
     else:
         crop = None
-    config.ops = get_transform_ops(config.rescale, im_mean, crop)
-    config.val_ops = get_transform_ops(config.rescale, im_mean, 'center')
+    config.ops = get_transform_ops(config.rescale, im_mean, crop, crop_size=config.crop, normalize=config.normalize)
+    config.val_ops = get_transform_ops(config.rescale, im_mean, 'center', crop_size=config.crop, normalize=config.normalize)
     delattr(config, 'crop')
     delattr(config, 'rescale')
+    delattr(config, 'normalize')
     
     # Model initialization 
     config.start_epoch = 0
@@ -71,18 +72,30 @@ def setup_config(config):
     
     # Setup optimizer 
     optim = config.optim
+    optim_tag = ''
     if config.optim == 'Adam':
+        optim_tag = 'Adam_eps{}'.format(config.epsilon)
         delattr(config, 'momentum')
     elif config.optim == 'SGD':
+        optim_tag = 'SGD_mom{}'.format(config.momentum)
         delattr(config, 'epsilon')
+    optim_tag = '{}_{}'.format(optim_tag, config.lr_init)        
     if config.lr_decay:
         config.lr_decay_step = int(config.lr_decay[1])
         config.lr_decay_factor = float(config.lr_decay[0])
         config.lr_decay = True
+        optim_tag = '{}_lrd{}-{}'.format(optim_tag, config.lr_decay_step, config.lr_decay_factor)   
+    optim_tag = '{}_wd{}'.format(optim_tag, config.weight_decay)
+    config.optim_tag = optim_tag
 
 def train(net, config, log, train_loader, val_loader=None):
+    optim_search = True
     # Setup visualizer
-    visman, tloss_meter, pos_acc_meter, rot_acc_meter, losses_meters, homo_meters = PoseNetVisTmp.get_meters(config, with_losses=False, with_homos=True)
+    if not optim_search:
+        visman, tloss_meter, pos_acc_meter, rot_acc_meter, losses_meters, homo_meters = PoseNetVisTmp.get_meters(config, with_losses=False, with_homos=True)
+    else:
+        visman, tloss_meter, pos_acc_meter, rot_acc_meter = OptimSearchVisTmp.get_meters(config)
+        homo_meters = None
     start_time = time.time()
     print('Start training from {config.start_epoch} to {config.epochs}.'.format(config=config))
     for epoch in range(config.start_epoch, config.epochs):
@@ -90,7 +103,7 @@ def train(net, config, log, train_loader, val_loader=None):
          loss, losses = net.train_epoch(train_loader, epoch)
          lprint('Epoch {}, loss:{}'.format(epoch+1, loss), log)         
          # Update homo variable meters
-         if config.learn_weighting:
+         if config.learn_weighting and homo_meters is not None:
              homo_meters[0].update(X=epoch+1, Y=net.sx)
              homo_meters[1].update(X=epoch+1, Y=net.sq)
 
