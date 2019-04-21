@@ -84,7 +84,7 @@ python -m abspose -b 75 --test \
        --resume %checkpoint_path% 
        --odir %result_output_dir%
 ````
-2. Test using [notebooks/evaluate_posenet.ipynb]([notebooks/evaluate_posenet.ipynb):
+2. Test using [notebooks/evaluate_posenet.ipynb](notebooks/evaluate_posenet.ipynb):
 We also provide notebook for evaluation which could be usful for further experiments with pretrained models.
 
 ### Citations
