@@ -49,7 +49,8 @@ class AbsPoseConfig:
         data_group.add_argument('--rescale', '-rs', metavar='%d', type=int, default=256, 
                                     help='target size (the shorter edge) after rescaling(default: %(default)s)')
         data_group.add_argument('--crop', '-c',  metavar='%d', type=int, default=224, 
-                                    help='crop image to square with given size (default: %(default)s). Images are randomly cropped during training and centerly cropped during testing and validation')
+                                    help='random/center crop image to square with given size during train/test(default: %(default)s)')
+        data_group.add_argument('--normalize', '-norm', action='store_true', help='normalize image values with imagenet mean&std')
         
         # Model training loss
         model_group.add_argument('--beta',  metavar='%s', type=int, default=1, 

@@ -4,7 +4,7 @@ from torchvision import transforms
 import numpy as np
 from PIL import Image, ImageChops
 
-def get_transform_ops(resize=256, image_mean=None, crop='center', crop_size=224):
+def get_transform_ops(resize=256, image_mean=None, crop='center', crop_size=224, normalize=False):
     ops = []
     if resize:
         ops.append(transforms.Resize(resize, Image.BICUBIC))
@@ -16,7 +16,11 @@ def get_transform_ops(resize=256, image_mean=None, crop='center', crop_size=224)
     elif crop == 'random':
         crop = RandomCropNumpy(crop_size)
         ops.append(crop)
-    ops.append(ToTensorUnscaled())
+    if normalize:
+        ops.append(ToTensorScaled())  # Scale value to [0, 1] 
+        ops.append(transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]))
+    else:
+        ops.append(ToTensorUnscaled())
     return transforms.Compose(ops)
 
 class ToTensorScaled(object):
