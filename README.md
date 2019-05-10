@@ -49,7 +49,7 @@ Here we show an example to train a PoseNet-Nobeta model on ShopFacade scene.
 ````
 python -m abspose -b 75 --train -val 10 --epoch 1000 \
        --data_root 'data/CambridgeLandmarks' \
-       --train_txt 'dataset_train.txt' --val_txt 'dataset_test.txt' \
+       --pose_txt 'dataset_train.txt' --val_pose_txt 'dataset_test.txt' \
        --dataset 'ShopFacade' -rs 256 --crop 224 \
        --network 'PoseNet'  --pretrained 'weights/googlenet_places.extract.pth'\
        --optim 'Adam' -eps 1.0 -lr 0.005 -wd 0.0001 \
