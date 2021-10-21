@@ -6,7 +6,7 @@ from torchvision import transforms
 import torch.utils.data as data
 
 from utils.common.config_parser import AbsPoseConfig 
-from utils.common.setup import * 
+from utils.common.setup import *
 from utils.datasets.preprocess import *
 from utils.datasets.abspose import AbsPoseDataset
 from utils.common.visdom_templates import PoseNetVisTmp, OptimSearchVisTmp

@@ -14,7 +14,8 @@ Bash into container: `docker exec -it apr bash`
 
 
 
-
+#How to test
+Run script ./test.sh or use command: `python3 -m unittest discover .`
 
 
 
