@@ -1,3 +1,32 @@
+# How to run
+### Get image
+Build: `docker build . -t polevanovairina/visloc-apr`
+OR
+Download image from dockerhub: `docker pull polevanovairina/visloc-apr`
+
+### Run
+Run: `docker run --name apr polevanovairina/visloc-ap`
+
+### Execute commands in container's evironment
+Run command: `docker exec -it apr <command>`
+Bash into container: `docker exec -it apr bash`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Absolute Camera Pose Regression for Visual Localization
 This repository provides implementation of PoseNet\[Kendall2015ICCV\], PoseNet-Nobeta\[Kendall2017CVPR\] which trains PoseNet using the loss learning the weighting parameter and PoseLSTM\[Walch2017ICCV\].
 To use our code, first download the repository:
