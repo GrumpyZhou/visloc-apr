@@ -5,7 +5,7 @@ OR
 Download image from dockerhub: `docker pull polevanovairina/visloc-apr`
 
 ### Run
-Run: `docker run --name apr polevanovairina/visloc-ap`
+Run: `docker run --name apr polevanovairina/visloc-apr`
 
 ### Execute commands in container's evironment
 Run command: `docker exec -it apr <command>`
