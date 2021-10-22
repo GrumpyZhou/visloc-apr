@@ -1,0 +1,39 @@
+name: Docker
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag'
+        default: 'latest'
+        required: true
+
+env:
+  IMAGE_NAME: polevanovairina/visloc-apr
+
+jobs:
+  push:
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get image tag
+        run: |
+          IMAGE_ID=$IMAGE_NAME
+          VERSION=${{ github.event.inputs.tag }}
+          echo IMAGE_ID=$IMAGE_ID
+          echo VERSION=$VERSION
+          echo "IMAGE_ID=$IMAGE_ID" >> $GITHUB_ENV
+          echo "IMAGE_TAG=$VERSION" >> $GITHUB_ENV
+      - name: Push image to registry
+        uses: whoan/docker-build-with-cache-action@fix-json-extra-args
+        with:
+          username: "${{ secrets.DOCKERHUB_USER }}"
+          password: "${{ secrets.DOCKERHUB_TOKEN }}"
+          image_name: "${{ env.IMAGE_ID }}"
+          image_tag: "${{ env.IMAGE_TAG }}"
+
